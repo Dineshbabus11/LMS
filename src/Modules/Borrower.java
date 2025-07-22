@@ -75,4 +75,19 @@ public class Borrower {
 		return status;
 	}
 	
+	public void printDetails() {
+		System.out.println("Your Details:");
+		System.out.println("ID:"+getId());
+		System.out.println("Name:"+getName());
+		System.out.println("Email:"+getEmail());
+		System.out.println("Address:"+getAddress());
+		System.out.println("Date of Birth:"+getDob());
+		System.out.println("Type:"+getType());
+		System.out.println("Department:"+getDept());
+		System.out.println("Username:"+getUsername());
+		System.out.println("Join Date:"+getJoinDate());
+		System.out.println("Expiry Date:"+getExpDate());
+		System.out.println("Status:"+getStatus());
+	}
+	
 }

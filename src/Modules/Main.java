@@ -24,10 +24,11 @@ public class Main {
 					String password=sc.nextLine();
 					for(Admin i:adminDetails) {
 						if(username.equals(i.getUsername()) && password.equals(i.getPassword())){
+							while(true) {
 							System.out.println("Welcome to admin dashboard");
 							System.out.println("1.Add Books\n2.Edit Books\n3.View Books\n4.My Profile\n5.Add User\n6.Edit User\n7.View User\n8.Exit");
 							int ch=sc.nextInt();
-							while(true) {
+							
 								if(ch==1) {
 									return;
 								}
@@ -76,6 +77,7 @@ public class Main {
 				System.out.println("====================Welcome Borrower====================\n1.Login\n2.New User\n3.Close");
 				int log=sc.nextInt();
 				if(log==1) {
+					sc.nextLine();
 					System.out.println("===============Borrower Login Page===============");
 					System.out.println("Enter username:");
 					String username=sc.nextLine();
@@ -83,8 +85,20 @@ public class Main {
 					String password=sc.nextLine();
 					for(Borrower i:borrowerDetails) {
 						if(username.equals(i.getUsername()) && password.equals(i.getPassword())) {
+							while(true) {
 							System.out.println("Welcome to Borrower Dashboard");
 							System.out.println("1.Profile\n2.View My Book Details\n3.Exit");
+							int ch=sc.nextInt();
+								if(ch==1) {
+									i.printDetails();
+								}
+								else if(ch==2) {
+									return;
+								}
+								else {
+									break;
+								}
+							}
 							break;
 						}
 					}
