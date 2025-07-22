@@ -49,6 +49,16 @@ public class Admin {
 	public boolean getStatus() {
 		return status;
 	}
+	public void printDetails() {
+		System.out.println("========================Admin Details========================");
+		System.out.println("Admin ID: "+getId());
+		System.out.println("Name: "+getName());
+		System.out.println("Email: "+getEmail());
+		System.out.println("Phone: "+getPhone());
+		System.out.println("Role: "+getRole());
+		System.out.println("Username: "+getUsername());
+		System.out.println("Status: "+getStatus());
+	}
 	
 	
 }
