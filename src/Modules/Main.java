@@ -1,153 +1,172 @@
 package Modules;
 import java.util.*;
+import java.time.*;
+import java.time.temporal.ChronoUnit;
 public class Main {
 
-	public static void main(String[] args) {
-		
-		Scanner sc=new Scanner(System.in);
-		
-		ArrayList<Admin> adminDetails=new ArrayList<>();
-		ArrayList<Borrower> borrowerDetails=new ArrayList<>();
-		
-		while(true) {
-			System.out.println("====================Welcome to LMS====================\n1.Admin\n2.Borrower\n3.Close");
-			int user=sc.nextInt();
-			if(user==1) {
-				System.out.println("====================Welcome Admin====================\n1.Login\n2.New User\n3.Close");
-				int log=sc.nextInt();
-				if(log==1) {
-					sc.nextLine();
-					System.out.println("===============Admin Login Page===============");
-					System.out.println("Enter your username:");
-					String username=sc.nextLine();
-					System.out.println("Enter your password:");
-					String password=sc.nextLine();
-					for(Admin i:adminDetails) {
-						if(username.equals(i.getUsername()) && password.equals(i.getPassword())){
-							while(true) {
-							System.out.println("Welcome to admin dashboard");
-							System.out.println("1.Add Books\n2.Edit Books\n3.View Books\n4.My Profile\n5.Add User\n6.Edit User\n7.View User\n8.Exit");
-							int ch=sc.nextInt();
-							
-								if(ch==1) {
-									return;
-								}
-								else if(ch==4) {
-									i.printDetails();
-								}
-								else {
-									break;
-								}
-							}
-							break;
-						}
-					}
-				}
-				else if(log==2) {
-					System.out.println("Enter the details to create an account as an Admin:");
-					System.out.println("Enter the Admin ID:");
-					int id=sc.nextInt();
-					sc.nextLine();
-					System.out.println("Enter your name:");
-					String name=sc.nextLine();
-					System.out.println("Enter your email:");
-					String email=sc.nextLine();
-					System.out.println("Enter your phone number:");
-					String phone=sc.nextLine();
-					System.out.println("Enter your role(Librarian/Admin/Clerk):");
-					String role=sc.nextLine();
-					System.out.println("Enter your username:");
-					String username=sc.nextLine();
-					System.out.println("Enter your password:");
-					String password=sc.nextLine();
-					System.out.println("Enter your status(Active/Inactive):");
-					String status=sc.nextLine();
-					
-					//admin object creation
-					Admin obj=new Admin(id,name,email,phone,role,username,password,status);
-					
-					adminDetails.add(obj);
-				}
-				else {
-					break;
-				}
-				
-			}
-			else if(user==2) {
-				System.out.println("====================Welcome Borrower====================\n1.Login\n2.New User\n3.Close");
-				int log=sc.nextInt();
-				if(log==1) {
-					sc.nextLine();
-					System.out.println("===============Borrower Login Page===============");
-					System.out.println("Enter username:");
-					String username=sc.nextLine();
-					System.out.println("Enter password:");
-					String password=sc.nextLine();
-					for(Borrower i:borrowerDetails) {
-						if(username.equals(i.getUsername()) && password.equals(i.getPassword())) {
-							while(true) {
-							System.out.println("Welcome to Borrower Dashboard");
-							System.out.println("1.Profile\n2.View My Book Details\n3.Exit");
-							int ch=sc.nextInt();
-								if(ch==1) {
-									i.printDetails();
-								}
-								else if(ch==2) {
-									return;
-								}
-								else {
-									break;
-								}
-							}
-							break;
-						}
-					}
-				}
-				else if(log==2) {
-					System.out.println("Enter the details to create an account as an Borrower:");
-					System.out.println("Enter the Borrower ID:");
-					int id=sc.nextInt();
-					sc.nextLine();
-					System.out.println("Enter your name:");
-					String name=sc.nextLine();
-					System.out.println("Enter your email:");
-					String email=sc.nextLine();
-					System.out.println("Enter your phone number:");
-					String phone=sc.nextLine();
-					System.out.println("Enter your address:");
-					String address=sc.nextLine();
-					System.out.println("Enter your Date of Birth:");
-					String dob=sc.nextLine();
-					System.out.println("Enter your Type:");
-					String type=sc.nextLine();
-					System.out.println("Enter your Department:");
-					String dept=sc.nextLine();
-					System.out.println("Enter your username:");
-					String username=sc.nextLine();
-					System.out.println("Enter your password:");
-					String password=sc.nextLine();
-					System.out.println("Enter your Date of join:");
-					String joinDate=sc.nextLine();
-					System.out.println("Enter your Expiry date:");
-					String expDate=sc.nextLine();
-					System.out.println("Enter your status(Active/Inactive):");
-					String status=sc.nextLine();
-					
-					//borrower object creation
-					Borrower obj=new Borrower(id,name,email,phone,address,dob,type,dept,username,password,joinDate,expDate,status);
-					
-					borrowerDetails.add(obj);
-				}
-				else {
-					break;
-				}
-				
-			}
-			else {
-				break;
-			}
-		}
+	static Scanner sc = new Scanner(System.in);
+    static Map<String, User> users = new HashMap<>();
+    static List<Book> books = new ArrayList<>();
+    static Map<String, List<BorrowRecord>> borrowRecords = new HashMap<>();
 
-	}
+    public static void main(String[] args) {
+        seedData(); 
+        while (true) {
+            System.out.println("\n=== Library System ===");
+            System.out.print("Enter Email: ");
+            String email = sc.nextLine();
+            System.out.print("Enter Password: ");
+            String pwd = sc.nextLine();
+
+            if (users.containsKey(email) && users.get(email).password.equals(pwd)) {
+                User user = users.get(email);
+                if (user.role.equals("admin")) adminMenu(user);
+                else borrowerMenu(user);
+            } else {
+                System.out.println("Invalid login.");
+            }
+        }
+    }
+
+    static void seedData() {
+        users.put("admin@lib.com", new User("admin@lib.com", "admin123", "Admin", "admin"));
+        books.add(new Book("ISBN123", "Java Basics", "James", 500.0, 5));
+    }
+
+    static void adminMenu(User admin) {
+        while (true) {
+            System.out.println("\n--- Admin Menu ---");
+            System.out.println("1. Add Book");
+            System.out.println("2. View Books");
+            System.out.println("3. Add User");
+            System.out.println("4. View Reports");
+            System.out.println("5. Logout");
+            int choice = Integer.parseInt(sc.nextLine());
+
+            switch (choice) {
+                case 1: addBook(); break;
+                case 2: viewBooks(); break;
+                case 3: addUser(); break;
+                case 4: viewAdminReports(); break;
+                case 5: return;
+                default: System.out.println("Invalid choice.");
+            }
+        }
+    }
+
+    static void borrowerMenu(User borrower) {
+        while (true) {
+            System.out.println("\n--- Borrower Menu ---");
+            System.out.println("1. View Books");
+            System.out.println("2. Borrow Book");
+            System.out.println("3. Return Book");
+            System.out.println("4. View Fines/Deposits");
+            System.out.println("5. Logout");
+            int choice = Integer.parseInt(sc.nextLine());
+
+            switch (choice) {
+                case 1: viewBooks(); break;
+                case 2: borrowBook(borrower); break;
+                case 3: returnBook(borrower); break;
+                case 4: viewDepositAndFines(borrower); break;
+                case 5: return;
+                default: System.out.println("Invalid choice.");
+            }
+        }
+    }
+
+    static void addBook() {
+        System.out.print("ISBN: "); String isbn = sc.nextLine();
+        System.out.print("Title: "); String title = sc.nextLine();
+        System.out.print("Author: "); String author = sc.nextLine();
+        System.out.print("Cost: "); double cost = Double.parseDouble(sc.nextLine());
+        System.out.print("Quantity: "); int qty = Integer.parseInt(sc.nextLine());
+        books.add(new Book(isbn, title, author, cost, qty));
+        System.out.println("Book added.");
+    }
+
+    static void viewBooks() {
+        books.sort(Comparator.comparing(b -> b.title));
+        for (Book b : books) {
+            System.out.println(b.title + " | " + b.author + " | " + b.quantity + " copies");
+        }
+    }
+
+    static void addUser() {
+        System.out.print("Email: "); String email = sc.nextLine();
+        System.out.print("Password: "); String pass = sc.nextLine();
+        System.out.print("Name: "); String name = sc.nextLine();
+        System.out.print("Role (admin/borrower): "); String role = sc.nextLine();
+        users.put(email, new User(email, pass, name, role));
+        System.out.println("User added.");
+    }
+
+    static void borrowBook(User borrower) {
+        if (borrower.borrowedBooks.size() >= 3) {
+            System.out.println("Max 3 books allowed.");
+            return;
+        }
+        System.out.print("Enter book title or ISBN: ");
+        String input = sc.nextLine();
+        for (Book b : books) {
+            if ((b.title.equalsIgnoreCase(input) || b.isbn.equals(input)) && b.quantity > 0) {
+                if (borrower.borrowedBooks.contains(b)) {
+                    System.out.println("Cannot borrow same book twice.");
+                    return;
+                }
+                if (borrower.deposit < 500) {
+                    System.out.println("Maintain Rs.500 as security deposit.");
+                    return;
+                }
+                borrower.borrowedBooks.add(b);
+                b.quantity--;
+                borrowRecords.computeIfAbsent(borrower.email, k -> new ArrayList<>())
+                        .add(new BorrowRecord(b, LocalDate.now(), LocalDate.now().plusDays(15)));
+                System.out.println("Book borrowed successfully.");
+                return;
+            }
+        }
+        System.out.println("Book not found or unavailable.");
+    }
+
+    static void returnBook(User borrower) {
+        List<BorrowRecord> records = borrowRecords.getOrDefault(borrower.email, new ArrayList<>());
+        if (records.isEmpty()) {
+            System.out.println("No books borrowed.");
+            return;
+        }
+        for (int i = 0; i < records.size(); i++) {
+            BorrowRecord br = records.get(i);
+            System.out.println((i + 1) + ". " + br.book.title + " | Due: " + br.dueDate);
+        }
+        System.out.print("Select book to return: ");
+        int index = Integer.parseInt(sc.nextLine()) - 1;
+        if (index >= 0 && index < records.size()) {
+            BorrowRecord br = records.remove(index);
+            br.book.quantity++;
+            borrower.borrowedBooks.remove(br.book);
+            long daysLate = ChronoUnit.DAYS.between(br.dueDate, LocalDate.now());
+            if (daysLate > 0) {
+                double fine = Math.min(daysLate * 2, br.book.cost * 0.8);
+                borrower.deposit -= fine;
+                System.out.println("Returned with fine of Rs. " + fine);
+            } else {
+                System.out.println("Book returned on time.");
+            }
+        }
+    }
+
+    static void viewDepositAndFines(User borrower) {
+        System.out.println("Deposit Left: Rs. " + borrower.deposit);
+    }
+
+    static void viewAdminReports() {
+        System.out.println("--- Low Stock Books ---");
+        for (Book b : books) {
+            if (b.quantity <= 1) {
+                System.out.println(b.title + " - Qty: " + b.quantity);
+            }
+        }
+    }
 
 }
