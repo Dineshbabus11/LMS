@@ -1,7 +1,9 @@
 package Modules;
 
 public class Book {
-	String isbn, title, author;
+    String isbn;
+    String title; 
+    String author;
     double cost;
     int quantity;
 
